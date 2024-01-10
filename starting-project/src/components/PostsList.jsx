@@ -9,6 +9,14 @@ function PostsList({isPosting, onStopPosting}) {
   const [posts, setPosts] = useState([]); //array of posts
 
   function addPostHandler(postData) {
+    fetch('http://localhost:8080/posts', {
+      method: 'POST',
+      body: JSON.stringify(postData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
     setPosts((existingPosts) => [postData, ...existingPosts]);  //adding new post to the beginning of the array, saving previous ones
   }
 
@@ -16,22 +24,22 @@ function PostsList({isPosting, onStopPosting}) {
     <>
       {isPosting && (
         <Modal onClose={onStopPosting}>
-            <NewPost 
-              onCancel={onStopPosting}
-              onAddPost={addPostHandler}
-            />
+          <NewPost 
+            onCancel={onStopPosting}
+            onAddPost={addPostHandler}
+          />
         </Modal>
       )}
 
       {posts.length >0 && (
         <ul className={classes.posts}>
-        {posts.map((post) => (
-          <Post 
-            author={post.author}
-            body={post.body}
-          />
-        ))}
-      </ul>
+          {posts.map((post) => (
+            <Post 
+              author={post.author}
+              body={post.body}
+            />
+          ))}
+        </ul>
       )}
 
       {posts.length === 0 && (
