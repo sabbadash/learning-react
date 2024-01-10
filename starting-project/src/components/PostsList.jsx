@@ -5,38 +5,41 @@ import NewPost from './NewPost';
 import Modal from './Modal';
 import classes from './PostsList.module.css';
 
-function PostsList() {
-  const [ modalIsVisible, setModalIsVisible] = useState(true);
-  const [ enteredBody, setEnteredBody] = useState('');
-  const [ enteredAuthor, setEnteredAuthor] = useState(''); 
+function PostsList({isPosting, onStopPosting}) {
+  const [posts, setPosts] = useState([]); //array of posts
 
-  function hideModalHandler() {
-    setModalIsVisible(false);
-  }
-
-  function bodyChangeHandler(event) {
-    setEnteredBody(event.target.value);
-  }
-
-  function authorChangeHandler(event) {
-    setEnteredAuthor(event.target.value);
+  function addPostHandler(postData) {
+    setPosts((existingPosts) => [postData, ...existingPosts]);  //adding new post to the beginning of the array, saving previous ones
   }
 
   return (
     <>
-      {modalIsVisible ? (
-        <Modal onClose={hideModalHandler}>
-          <NewPost 
-          onBodyChange={bodyChangeHandler} 
-          onAuthorChange={authorChangeHandler}
-          />
+      {isPosting && (
+        <Modal onClose={onStopPosting}>
+            <NewPost 
+              onCancel={onStopPosting}
+              onAddPost={addPostHandler}
+            />
         </Modal>
-      ) : null}
-      
-      <ul className={classes.posts}>
-        <Post author={enteredAuthor} body={enteredBody}/>
-        <Post author="Mike" body="Hey ya!"/>
+      )}
+
+      {posts.length >0 && (
+        <ul className={classes.posts}>
+        {posts.map((post) => (
+          <Post 
+            author={post.author}
+            body={post.body}
+          />
+        ))}
       </ul>
+      )}
+
+      {posts.length === 0 && (
+        <div style={{ textAlign: 'center', color:'white'}}>
+          <h2>There are no posts yet.</h2>
+          <p>Start adding some!</p>
+        </div>
+      )}
     </>
   );
 }
