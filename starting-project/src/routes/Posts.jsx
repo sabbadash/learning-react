@@ -6,7 +6,7 @@ function Posts() {
 
   return (
     <>
-      <Outlet />
+    <Outlet />
       <main>
         <PostsList />
       </main>
